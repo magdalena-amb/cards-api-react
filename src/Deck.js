@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import Card from './Card';
+import './Deck.css';
 
 const BASE_URL = 'https://deckofcardsapi.com/api/deck/';
 
 class Deck extends Component {
     state = {
             deck: null,
-            drawn: []
+            drawn: [],
+            noCard: false,
         }
     
     async componentDidMount(){
@@ -39,18 +42,33 @@ class Deck extends Component {
                 ]
             }));
         } catch (err){
-            alert(err);
+            //alert(err);
+            this.setState({...this.state, noCard: true});
         }
         
     }
 
     render() {
-        return (
-            <div>
-                <h1> Card Dealer </h1>
+        const cards = this.state.drawn.map(c => (
+            <Card key={c.id} name={c.name} image={c.image} />
+        ));
+         
+        if (!this.state.noCard) {
+            return (
+                <div className='Deck'>
+                    <h1> Card Dealer </h1>
                 <button onClick={this.getCard}>Get card!</button>
-            </div>
-        );
+                <div className='Deck-cardarea'> { cards } </div>
+                </div>
+            )} else {
+            return (
+                <div>
+                    <h1>No card remaining!</h1>
+                    <div className='Deck-cardarea'> { cards } </div>
+                </div>
+            )
+        }
+    
     }
 }
 
